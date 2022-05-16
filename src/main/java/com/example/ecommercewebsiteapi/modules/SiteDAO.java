@@ -256,11 +256,27 @@ public class SiteDAO {
         return 1;
     }
 
-    public List<Product> getCategory(String category) {
+    public List<Product> getCategory(String category) throws SQLException {
         //this function get a list of products according to specific category
         //implement function here
+        stmt = this.con.prepareStatement("select * from product where category = ?");
+        stmt.setString(1,category);
+        ResultSet rs = stmt.executeQuery();
+        List<Product> products = new ArrayList<>();
 
-        return null;
+        while (rs.next()) {
+            products.add(new Product(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getInt("price"),
+                    rs.getInt("quantity"),
+                    rs.getString("photo"),
+                    rs.getString("details"),
+                    rs.getString("category")));
+        }
+
+        System.out.println("in get product with category");
+        return products;
     }
 
     public List<Product> getLatest() {
@@ -290,7 +306,7 @@ public class SiteDAO {
 
         System.out.println(product.size());
 
-        System.out.println("in get product");
+        System.out.println("in get product with id");
         return product;
     }
 
@@ -332,5 +348,47 @@ public class SiteDAO {
         } else {
             return -1;
         }
+    }
+
+    public List<String> getCategories() throws SQLException {
+        stmt = this.con.prepareStatement("select distinct category from product");
+        ResultSet rs = stmt.executeQuery();
+        List<String> products = new ArrayList<>();
+
+        while (rs.next()) {
+            products.add(rs.getString("category"));
+        }
+        System.out.println("in get categories");
+        return products;
+    }
+
+    public String checkCart(String productId, String userId) throws SQLException {
+        stmt = this.con.prepareStatement("select * from cart where userid = ? and productid= ?");
+        stmt.setInt(1,Integer.parseInt(userId));
+        stmt.setInt(2,Integer.parseInt(productId));
+        ResultSet rs = stmt.executeQuery();
+        System.out.println("in checkCart");
+        if (rs!=null){
+            return "found";
+        }else {
+            return "null";
+        }
+    }
+
+    public List<Cart> getMyCart(String body) throws SQLException {
+        stmt = this.con.prepareStatement("select * from cart where userid= ?");
+        stmt.setInt(1,Integer.parseInt(body));
+        ResultSet rs = stmt.executeQuery();
+        List<Cart> products = new ArrayList<>();
+
+        while (rs.next()) {
+            products.add(new Cart(
+                    rs.getInt("productid"),
+                    rs.getInt("userid"),
+                    rs.getInt("quantity")));
+        }
+        System.out.println("in get cart");
+
+        return products;
     }
 }

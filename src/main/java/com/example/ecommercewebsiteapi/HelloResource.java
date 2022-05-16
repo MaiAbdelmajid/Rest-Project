@@ -38,6 +38,48 @@ public class HelloResource {
     }
 
     @GET
+    @Path("/getCategories")@Produces("application/json")
+    public String getCategories() throws SQLException, JsonProcessingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        DBConnect();
+        List<String> employee = SiteDAO.instanceData.getCategories();
+        if (employee != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(employee);
+            System.out.println(jsonString);
+            return jsonString;
+        } else {
+            return "null";
+        }
+    }
+
+    @GET
+    @Path("/getCategory/{name}")@Produces("application/json")
+    public String getCategory(@PathParam("name") String name) throws SQLException, JsonProcessingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        DBConnect();
+        List<Product> employee = SiteDAO.instanceData.getCategory(name);
+        if (employee != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(employee);
+            System.out.println(jsonString);
+            return jsonString;
+        } else {
+            return "null";
+        }
+    }
+
+    @GET
+    @Path("/checkCart/{productId}/{userId}")@Produces("application/json")
+    public String getCategory(@PathParam("productId") String productId,@PathParam("userId") String userId) throws SQLException, JsonProcessingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        DBConnect();
+        String employee = SiteDAO.instanceData.checkCart(productId,userId);
+        if (employee != null) {
+            return employee;
+        } else {
+            return "null";
+        }
+    }
+
+    @GET
     @Path("/getProduct/{id}")@Produces("application/json")
     public String getProduct(@PathParam("id") String body) throws SQLException, JsonProcessingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         DBConnect();
@@ -72,6 +114,21 @@ public class HelloResource {
     public String getCart() throws SQLException, JsonProcessingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         DBConnect();
         List<Cart> employee = SiteDAO.instanceData.getCart();
+        if (employee != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(employee);
+            System.out.println(jsonString);
+            return jsonString;
+        } else {
+            return "null";
+        }
+    }
+
+    @GET
+    @Path("/getMyCart/{id}")@Produces("application/json")
+    public String getCart(@PathParam("id") String body) throws SQLException, JsonProcessingException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        DBConnect();
+        List<Cart> employee = SiteDAO.instanceData.getMyCart(body);
         if (employee != null) {
             ObjectMapper mapper = new ObjectMapper();
             String jsonString = mapper.writeValueAsString(employee);
